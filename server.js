@@ -18,6 +18,11 @@ app.use('/api/usuarios', usuariosRoutes);
 const actividadesRoutes = require('./routes/actividades');
 app.use('/api/actividades', actividadesRoutes);
 
+app.get('/', (req, res) => {
+  res.send('API Tareas Telcofiber funcionando ✅');
+});
+
+
 // Test de conexión
 pool.query('SELECT NOW()', (err, res) => {
   if (err) {
