@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../models/db');
+const multer = require('multer');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: './uploads/',
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage });
 
 // GET - Listar todas las actividades
 router.get('/', async (req, res) => {
@@ -64,17 +74,18 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id/entregar', async (req, res) => {
+router.put('/:id/entregar', upload.single('archivo'), async (req, res) => {
   const { id } = req.params;
   const { nota_entrega } = req.body;
+  const evidencia = req.file ? req.file.filename : null;
   const fecha_entregada = new Date();
 
   try {
     await pool.query(
-	  'UPDATE actividades SET estado = $1, nota_entrega = $2, fecha_entregada = $3 WHERE id = $4',
-	  ['entregada', nota_entrega, fecha_entregada, id]
-	);
-    res.send({ message: 'Actividad entregada' });
+      'UPDATE actividades SET estado = $1, nota_entrega = $2, fecha_entregada = $3, evidencia_entrega = $4 WHERE id = $5',
+      ['entregada', nota_entrega, fecha_entregada, evidencia, id]
+    );
+    res.send({ message: 'Actividad entregada con evidencia' });
   } catch (error) {
     console.error('Error al entregar actividad:', error);
     res.status(500).json({ message: 'Error al entregar actividad' });
