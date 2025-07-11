@@ -4,6 +4,8 @@ const pool = require('./models/db');
 const authRoutes = require('./routes/auth');
 const bcrypt = require('bcryptjs');
 const usuariosRoutes = require('./routes/usuarios');
+const ideasRoutes = require('./routes/ideas');
+
 require('dotenv').config();
 
 const app = express();
@@ -14,6 +16,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/uploads', express.static('uploads'));
+app.use('/api/ideas', ideasRoutes);
+
 
 // Rutas
 const actividadesRoutes = require('./routes/actividades');
